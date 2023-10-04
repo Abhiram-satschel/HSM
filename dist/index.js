@@ -154,6 +154,6 @@ app.post("/api/tx/submit", (req, res) => __awaiter(void 0, void 0, void 0, funct
         });
     }
 }));
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`First server listening at http://localhost:${PORT}`);
 });
