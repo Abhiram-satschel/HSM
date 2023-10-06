@@ -21,52 +21,6 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const PORT = 3002;
 const contract = new web3.eth.Contract(Abi_json_1.default);
-// Your existing routes for the first server
-app.post("/api/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const requestData = {
-            slotNumber: req.body.slotNumber,
-            password: req.body.password,
-        };
-        const response = yield axios_1.default.post("http://localhost:3003/api/login", requestData);
-        res.json(response.data);
-    }
-    catch (error) {
-        console.error("Error in making request to the second server", error.message);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-}));
-app.post("/api/logout", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const response = yield axios_1.default.post("http://localhost:3003/api/logout");
-        res.json(response.data);
-    }
-    catch (error) {
-        console.error("Error in making request to the second server", error.message);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-}));
-app.get("/api/keys/all", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const response = yield axios_1.default.get("http://localhost:3003/api/keys/all");
-        res.json(response.data);
-    }
-    catch (error) {
-        console.error("Error in making request to the second server", error.message);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-}));
-app.post("/api/keys/generate", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const requestData = { keylabel: req.body.keylabel };
-        const response = yield axios_1.default.post("http://localhost:3003/api/keys/generate", requestData);
-        res.json(response.data);
-    }
-    catch (error) {
-        console.error("Error in making request to the second server", error.message);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-}));
 app.post("/api/tx/generator/createAsset", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, symbol, totalSupply, requiredSignatures, initialSigners, label, ethereumAddress, } = req.body;
