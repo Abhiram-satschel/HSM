@@ -15,6 +15,69 @@ const PORT = 3002;
 
 const contract = new web3.eth.Contract(ABI);
 
+// Your existing routes for the first server
+
+app.post("/api/login", async (req, res) => {
+  try {
+    const requestData = {
+      slotNumber: req.body.slotNumber,
+      password: req.body.password,
+    };
+    const response = await axios.post(
+      "http://localhost:3004/api/login",
+      requestData
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error(
+      "Error in making request to the second server",
+      error.message
+    );
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+app.post("/api/logout", async (req, res) => {
+  try {
+    const response = await axios.post("http://localhost:3004/api/logout");
+    res.json(response.data);
+  } catch (error) {
+    console.error(
+      "Error in making request to the second server",
+      error.message
+    );
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/api/keys/all", async (req, res) => {
+  try {
+    const response = await axios.get("http://localhost:3004/api/keys/all");
+    res.json(response.data);
+  } catch (error) {
+    console.error(
+      "Error in making request to the second server",
+      error.message
+    );
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/api/keys/generate", async (req, res) => {
+  try {
+    const requestData = { keylabel: req.body.keylabel };
+    const response = await axios.post(
+      "http://localhost:3004/api/keys/generate",
+      requestData
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error(
+      "Error in making request to the second server",
+      error.message
+    );
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 app.post("/api/tx/generator/createAsset", async (req, res) => {
   try {
     const {
@@ -40,7 +103,7 @@ app.post("/api/tx/generator/createAsset", async (req, res) => {
     const nonce = Number(await web3.eth.getTransactionCount(ethereumAddress));
     const gasPrice = Number(await web3.eth.getGasPrice());
     const response = await axios.post(
-      "http://localhost:3003/api/signTransaction",
+      "http://localhost:3004/api/signTransaction",
       { data, label, ethereumAddress, nonce, gasPrice }
     );
     res.json(response.data);
@@ -52,7 +115,6 @@ app.post("/api/tx/generator/createAsset", async (req, res) => {
     res.status(500).json({ error: "internal Server Error" });
   }
 });
-
 app.post("/api/tx/generator/mint", async (req, res) => {
   try {
     const { assetId, toAddress, amount, label, ethereumAddress } = req.body;
@@ -63,7 +125,7 @@ app.post("/api/tx/generator/mint", async (req, res) => {
     const gasPrice = Number(await web3.eth.getGasPrice());
 
     const response = await axios.post(
-      "http://localhost:3003/api/signTransaction",
+      "http://localhost:3004/api/signTransaction",
       { data, label, ethereumAddress, nonce, gasPrice }
     );
     res.json(response.data);
@@ -88,7 +150,7 @@ app.post("/api/tx/generator/signTransaction", async (req, res) => {
     const gasPrice = Number(await web3.eth.getGasPrice());
 
     const response = await axios.post(
-      "http://localhost:3003/api/signTransaction",
+      "http://localhost:3004/api/signTransaction",
       { data, label, ethereumAddress, nonce, gasPrice }
     );
     res.json(response.data);
@@ -113,7 +175,7 @@ app.post("/api/tx/generator/whitelist", async (req, res) => {
     const gasPrice = Number(await web3.eth.getGasPrice());
 
     const response = await axios.post(
-      "http://localhost:3003/api/signTransaction",
+      "http://localhost:3004/api/signTransaction",
       { data, label, ethereumAddress, nonce, gasPrice }
     );
     res.json(response.data);
@@ -137,7 +199,7 @@ app.post("/api/tx/generator/transfer", async (req, res) => {
     const nonce = Number(await web3.eth.getTransactionCount(ethereumAddress));
     const gasPrice = Number(await web3.eth.getGasPrice());
     const response = await axios.post(
-      "http://localhost:3003/api/signTransaction",
+      "http://localhost:3004/api/signTransaction",
       { data, label, ethereumAddress, nonce, gasPrice }
     );
     res.json(response.data);
