@@ -30,12 +30,12 @@ mod.initialize();
 
 let slot = null;
 let session = null;
-let activeSession = null;
+// let activeSession = null;
 app.post("/api/login", (req, res) => {
   try {
     const { slotNumber, password } = req.body;
-    if (activeSession) {
-      activeSession.logout();
+    if (session) {
+      session.logout();
     }
 
     // Load the specified slot
@@ -46,7 +46,6 @@ app.post("/api/login", (req, res) => {
 
     // Log in with the provided password
     session.login(password);
-    activeSession = session;
 
     res.json({ success: true, message: "Login successful" });
   } catch (error) {
@@ -54,12 +53,13 @@ app.post("/api/login", (req, res) => {
     res.status(401).json({ error: "Login error", details: error.message });
   }
 });
-app.post("/api/logout", (req, res) => {
+app.post("/api/logout", async (req, res) => {
   try {
     // Log out from the active session
-    if (activeSession) {
-      activeSession.logout();
-      activeSession = null;
+    if (session) {
+      await session.logout();
+      session = null;
+      // mod.finalize();
     }
 
     res.json({ success: true, message: "Logout successful" });
