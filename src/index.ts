@@ -20,8 +20,6 @@ app.use(express.static("./public"));
 
 app.use(compression());
 
-const contractAddress = "0x6E3dE3918c4Ab05b38BB0C7DDEC8aE2A26eC4973";
-
 // HSM Module Config
 const Module = graphene.Module;
 var lib = "C:/SoftHSM2/lib/softhsm2-x64.dll"; //windows
@@ -59,7 +57,6 @@ app.post("/api/logout", async (req, res) => {
     if (session) {
       await session.logout();
       session = null;
-      // mod.finalize();
     }
 
     res.json({ success: true, message: "Logout successful" });
@@ -96,7 +93,7 @@ app.get("/api/keys/all", (req, res) => {
 });
 
 app.post("/api/keys/generate", (req, res) => {
-  const keylabel = req.body.keylabel;
+  const keylabel = req.body.label;
   const ID = () => {
     return Math.random().toString(36).substr(2, 9);
   };
@@ -126,7 +123,7 @@ app.post("/api/keys/generate", (req, res) => {
   const buf2 = Buffer.from(address, "hex");
   const EthAddr = "0x" + buf2.slice(-20).toString("hex"); // take lat 20 bytes as ethereum adress
   let pkstr = puplicKey.toString("hex");
-  res.json({ EthAddr, pkstr });
+  res.json({ EthAddr });
 });
 
 app.post("/api/signTransaction", async (req, res) => {
@@ -135,7 +132,8 @@ app.post("/api/signTransaction", async (req, res) => {
   const label = req.body.label;
   const nonce = req.body.nonce;
   const gasPrice = req.body.gasPrice;
-
+  const to = req.body.to;
+  console.log(to);
   let Pkeys;
   //Get the Private key
   const allPkeys = session.find({ class: graphene.ObjectClass.PRIVATE_KEY });
@@ -156,7 +154,7 @@ app.post("/api/signTransaction", async (req, res) => {
     nonce: Web3.utils.toHex(nonce),
     gasPrice: Web3.utils.toHex(gasPrice),
     gasLimit: 4000000,
-    to: contractAddress,
+    to: to,
     value: 0,
     data: data,
     r: addressSign.r, // using r from the first signature
@@ -174,7 +172,7 @@ app.post("/api/signTransaction", async (req, res) => {
   tx.v = txSig.v;
 
   const serializedTx = tx.serialize().toString("hex");
-  res.json({ serializedTx });
+  res.json(serializedTx);
 });
 
 const decodeECPointToPublicKey = (data) => {
@@ -230,6 +228,6 @@ const calculateEthereumSig = (msgHash, EthreAddr, privateKey) => {
 };
 
 //------------------------------------------------------------------------
-app.listen(3003, () =>
-  console.log("Web app listening at http://localhost:3003")
+app.listen(3004, () =>
+  console.log("Web app listening at http://localhost:3004")
 );
