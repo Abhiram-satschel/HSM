@@ -73,11 +73,11 @@ app.post("/api/keys/generate", async (req, res) => {
 
 app.post("/api/signTransaction", async (req, res) => {
   try {
-    const { ethereumAddress, data, label, nonce, gasPrice } = req.body;
-
+    const { ethereumAddress, data, label, nonce, gasPrice, to } = req.body;
+    console.log(to);
     const response = await axios.post(
       "http://localhost:3004/api/signTransaction",
-      { ethereumAddress, data, label, nonce, gasPrice }
+      { ethereumAddress, data, label, nonce, gasPrice, to }
     );
     res.json(response.data);
   } catch (error) {
